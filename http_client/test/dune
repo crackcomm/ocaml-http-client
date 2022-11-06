@@ -1,0 +1,7 @@
+(library
+ (name test_http)
+ (modules test_http)
+ (libraries http_client expect_test_helpers_async)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))

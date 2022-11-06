@@ -1,0 +1,55 @@
+{
+  "dependencies": {
+    "ocaml": "4.14.0",
+    "@opam/dune": "3.2.0",
+    "@opam/core": "v0.15.0",
+    "@opam/logs": "0.7.0",
+    "@opam/async": "v0.15.0",
+    "@opam/httpaf": "*",
+    "@opam/httpaf-async": "*",
+    "@opam/uri": "*",
+    "@opam/async-uri": "*",
+    "@opam/ppx_log": "*",
+    "@opam/ppx_deriving": "*",
+    "@opam/ppx_sexp_conv": "*",
+    "@opam/expect_test_helpers_async": "*",
+    "@opam/ppx_jane": "*"
+  },
+  "resolutions": {
+    "ocaml": "esy-ocaml/ocaml#393bd25",
+    "@opam/async-uri": "crackcomm/async-uri:async-uri.opam#f55df54",
+    "@opam/easy-format": {
+      "source": "ocaml-community/easy-format:easy-format.opam#56c57e6",
+      "override": {
+        "build": "dune build -p easy-format"
+      }
+    },
+    "@opam/httpaf": "crackcomm/httpaf:httpaf.opam#d02839f",
+    "@opam/httpaf-async": "crackcomm/httpaf:httpaf-async.opam#d02839f",
+    "@opam/faraday": "crackcomm/faraday:faraday.opam#2c48670",
+    "@opam/faraday-async": "crackcomm/faraday:faraday-async.opam#2c48670",
+    "@opam/expect_test_helpers_async": "janestreet/expect_test_helpers_async:expect_test_helpers_async.opam#38d476d",
+    "@opam/topkg": "dune-universe/topkg:topkg.opam#6452158",
+    "@opam/astring": "dune-universe/astring:astring.opam#d907613",
+    "@opam/fmt": "dune-universe/fmt:fmt.opam#4175d4c",
+    "@opam/uutf": "dune-universe/uutf:uutf.opam#6944629",
+    "@opam/uucp": "dune-universe/uucp:uucp.opam#4f3f1dd",
+    "@opam/uuseg": "dune-universe/uuseg:uuseg.opam#491e2ee",
+    "@opam/fpath": {
+      "source": "dune-universe/fpath:fpath.opam#becfa26",
+      "override": {
+        "dependencies": {
+          "@opam/result": "*"
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "@opam/odoc": ">= 2.1.0",
+    "@opam/ocamlformat": "0.21.0",
+    "@opam/ocamlformat-rpc": "0.21.0",
+    "@opam/ocaml-lsp-server": "1.11.1",
+    "@opam/atdgen": "*",
+    "@opam/atdgen-runtime": "*"
+  }
+}

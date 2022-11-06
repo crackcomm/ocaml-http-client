@@ -1,0 +1,13 @@
+profile = janestreet
+break-infix = fit-or-vertical
+break-infix-before-func = true
+margin = 90
+parse-docstrings = true
+wrap-comments = false
+# break-collection-expressions = fit-or-vertical
+# break-fun-decl = wrap
+# if-then-else={compact|fit-or-vertical|keyword-first|k-r}
+# nested-match = wrap 
+max-iters = 15
+# infix-precedence = parens
+break-sequences = true

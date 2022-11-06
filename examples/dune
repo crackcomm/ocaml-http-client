@@ -1,0 +1,21 @@
+(rule
+  (targets api_j.ml api_j.mli)
+  (deps api.atd)
+  (action (run atdgen -j %{deps})))
+
+(rule
+  (targets api_t.ml api_t.mli)
+  (deps api.atd)
+  (action (run esy atdgen -open Core -deriving-conv sexp_of -t %{deps})))
+
+(library
+ (name example_http_api)
+ (libraries
+  core
+  yojson
+  atdgen-runtime
+  http_client.api
+  expect_test_helpers_async)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane ppx_sexp_conv)))

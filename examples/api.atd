@@ -1,0 +1,14 @@
+(* SPDX-License-Identifier: GPL-3.0-or-later *)
+
+type symbol_info =
+  { symbol : string
+  ; pair : string }
+
+type exchange_info =
+  { timezone : string
+  ; server_time <json name="serverTime"> : int
+  ; symbols : symbol_info list }
+
+type response_message =
+  { code : int
+  ; message <json name="msg"> : string }

@@ -1,0 +1,38 @@
+# atd generated code
+*_j.ml
+*_j.mli
+*_t.ml
+*_t.mli
+
+*.so
+*.exe
+
+.cache/
+
+**/*.log
+**/*.lock
+
+package-lock.json
+
+# IDEs and editors
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.history/*
+.idea/
+.vscode/
+.vagrant/
+.project
+.eggs/
+
+*.db
+
+**/.merlin
+
+# System Files
+.DS_Store
+Thumbs.db
+
+_esy
