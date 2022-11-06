@@ -2,8 +2,5 @@
 
 module Conn = Conn
 module Pool = Pool
-(*module Error = Conn.Error*)
-(*module Request = Conn.Request*)
-(*module Response = Conn.Response*)
 include Common
 include Conn
