@@ -3,7 +3,16 @@
 open Core
 open Async
 open Http_api
-open Common_api
+
+module Error_message = struct
+  type t = Api_t.response_message
+
+  let of_response (res : t) =
+    { Route.Error_message.code = res.code; message = res.message }
+  ;;
+
+  let of_string s = of_response (Api_j.response_message_of_string s)
+end
 
 module Exchange_info = Route.Make (struct
   let method_name = "bnc_perp.Public_api.Exchange_info"
