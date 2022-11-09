@@ -1,4 +1,4 @@
-(* SPDX-License-Identifier: GPL-3.0-or-later *)
+(* SPDX-License-Identifier: BSD-3-Clause *)
 
 module Status : sig
   include module type of struct
