@@ -2,23 +2,16 @@
 
 open Async
 open Core
-include Common
+open Http_types
 
 module type Signer = sig
   type t
 
-  val signed_request
-    :  ?timeout:Time_ns.Span.t
-    -> ?query:Http_client.Query.t
-    -> method_:Httpaf.Method.t
-    -> host:string
-    -> path:string
-    -> t
-    -> Httpaf.Request.t * string option
+  val sign_request : t -> Request.t -> Request.t
 end
 
 module type Descriptor = sig
-  include Make_route_intf.Descriptor
+  include Route_intf.Descriptor
   module Signer : Signer
 end
 
@@ -29,15 +22,26 @@ module type S = sig
     type t
   end
 
-  val request
-    :  ?timeout:Time_ns.Span.t
-    -> Signer.t
-    -> Http_client.Pool.t
-    -> Request.t
-    -> Response.t Outcome.t Deferred.t
+  (** [http_request req] constructs a signed http request for {!Request.t}. *)
+  val http_request : Signer.t -> Request.t -> Http_types.Request.t
 
-  (** Fetch in infinite loop. Used only in pathological cases. *)
-  val fetch_exn : Signer.t -> Http_client.Pool.t -> Request.t -> Response.t Deferred.t
+  (** [call ?timeout client signer req] constructs a signed http request and calls using
+      {!Http_client.t}. *)
+  val call
+    :  ?timeout:Time_ns.Span.t
+    -> Http_client.t
+    -> Signer.t
+    -> Request.t
+    -> (Response.t, Http_types.Response.Error.t) Deferred.Result.t
+
+  (** [call_exn ?timeout client signer req] constructs a signed http request and calls
+      using {!Http_client.t}. *)
+  val call_exn
+    :  ?timeout:Time_ns.Span.t
+    -> Http_client.t
+    -> Signer.t
+    -> Request.t
+    -> Response.t Deferred.t
 end
 
 module type Signed_route = sig

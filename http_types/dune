@@ -1,0 +1,7 @@
+(library
+ (name http_types)
+ (public_name http_client.http_types)
+ (libraries core async uri cohttp uri-sexp)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))

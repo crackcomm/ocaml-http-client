@@ -1,0 +1,16 @@
+(library
+ (name httpaf_backend)
+ (public_name http_client.httpaf_backend)
+ (libraries
+  core
+  async
+  async-uri
+  uri
+  httpaf
+  httpaf-async
+  http_client.http_backend_intf)
+ (inline_tests)
+ (preprocess
+  (pps
+   ppx_jane
+   ppx_log)))

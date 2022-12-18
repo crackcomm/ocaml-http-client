@@ -1,21 +1,23 @@
 (library
  (name http_client)
- (public_name http_client.client)
+ (public_name http_client.http_client)
+ (modules http_client pool)
  (libraries
   core
-  core_kernel.limiter
   async
   async-uri
-  async_kernel.limiter_async
   uri
-  httpaf
-  httpaf-async)
+  http_client.http_backend_intf
+  http_client.request_id
+  http_client.weighted_async_rate_limiter
+  cohttp-async)
  (inline_tests)
- (preprocess
-  (pps
-   ppx_sexp_conv
-   ppx_compare
-   ppx_hash
-   ppx_bin_prot
-   ppx_inline_test
-   ppx_log)))
+ (preprocess (pps ppx_jane ppx_log)))
+
+(library
+ (name http_client_test)
+ (public_name http_client.http_client_test)
+ (modules http_client_test)
+ (libraries http_client.httpmock)
+ (inline_tests)
+ (preprocess (pps ppx_jane)))

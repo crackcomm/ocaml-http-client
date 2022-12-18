@@ -1,0 +1,7 @@
+(library
+ (name request_id)
+ (public_name http_client.request_id)
+ (libraries core)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))

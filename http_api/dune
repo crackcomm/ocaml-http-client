@@ -1,6 +1,6 @@
 (library
  (name http_api)
  (public_name http_client.api)
- (libraries http_client.client)
+ (libraries http_client.http_client http_client.request_id)
  (preprocess
   (pps ppx_jane ppx_sexp_conv ppx_log)))

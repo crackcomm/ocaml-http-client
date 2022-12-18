@@ -1,0 +1,7 @@
+(library
+ (name httpmock)
+ (public_name http_client.httpmock)
+ (libraries core async http_client.http_client)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane ppx_expect)))

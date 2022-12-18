@@ -1,0 +1,11 @@
+(library
+ (name weighted_async_rate_limiter)
+ (public_name http_client.weighted_async_rate_limiter)
+ (libraries
+  core
+  core_kernel.limiter
+  async
+  async_kernel.limiter_async)
+ (inline_tests)
+ (preprocess
+  (pps ppx_jane)))

@@ -1,0 +1,5 @@
+(library
+ (name http_api_message)
+ (public_name http_client.api_message)
+ (libraries core)
+ (preprocess (pps ppx_jane)))

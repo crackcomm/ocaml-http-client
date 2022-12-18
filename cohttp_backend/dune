@@ -1,0 +1,13 @@
+(library
+ (name cohttp_backend)
+ (public_name http_client.cohttp_backend)
+ (libraries
+  core
+  async
+  async-uri
+  uri
+  cohttp-async
+  http_client.weighted_async_rate_limiter
+  http_client.http_backend_intf)
+ (inline_tests)
+ (preprocess (pps ppx_jane)))

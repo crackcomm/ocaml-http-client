@@ -1,4 +1,6 @@
 (* SPDX-License-Identifier: BSD-3-Clause *)
 
-module Route = Make_route
+module Request = Request
+module Response = Response
+module Route = Route
 module Signed_route = Signed_route
