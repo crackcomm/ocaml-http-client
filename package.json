@@ -1,12 +1,13 @@
 {
   "dependencies": {
     "ocaml": "4.14.0",
-    "@opam/dune": "3.2.0",
-    "@opam/core": "v0.15.0",
+    "@opam/dune": "3.6.1",
+    "@opam/core": "v0.15.1",
     "@opam/logs": "0.7.0",
     "@opam/async": "v0.15.0",
     "@opam/httpaf": "*",
     "@opam/httpaf-async": "*",
+    "@opam/cohttp-async": "5.0.0",
     "@opam/uri": "*",
     "@opam/async-uri": "*",
     "@opam/ppx_log": "*",
@@ -24,10 +25,10 @@
         "build": "dune build -p easy-format"
       }
     },
-    "@opam/httpaf": "crackcomm/httpaf:httpaf.opam#d02839f",
-    "@opam/httpaf-async": "crackcomm/httpaf:httpaf-async.opam#d02839f",
-    "@opam/faraday": "crackcomm/faraday:faraday.opam#2c48670",
-    "@opam/faraday-async": "crackcomm/faraday:faraday-async.opam#2c48670",
+    "@opam/httpaf": "crackcomm/httpaf:httpaf.opam#4996e65",
+    "@opam/httpaf-async": "crackcomm/httpaf:httpaf-async.opam#4996e65",
+    "@opam/faraday": "inhabitedtype/faraday:faraday.opam#c66fc02",
+    "@opam/faraday-async": "inhabitedtype/faraday:faraday-async.opam#c66fc02",
     "@opam/expect_test_helpers_async": "janestreet/expect_test_helpers_async:expect_test_helpers_async.opam#38d476d",
     "@opam/topkg": "dune-universe/topkg:topkg.opam#6452158",
     "@opam/astring": "dune-universe/astring:astring.opam#d907613",
