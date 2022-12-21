@@ -41,7 +41,7 @@ let%expect_test "Public Binance Perp API" =
       (module Cohttp_backend.Client)
       (Uri.make ~scheme:"https" ~host:"fapi.binance.com" ())
   in
-  Exchange_info.call_exn pool ()
+  Exchange_info.dispatch_exn pool ()
   >>| Http_api_message.Result.value_exn ~here:[%here]
   >>| fun info ->
   List.length info.symbols > 150 |> Bool.to_string |> print_endline;
