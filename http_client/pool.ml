@@ -3,13 +3,13 @@
 open Core
 open Async
 open Limiter_async
-module Outcome = Weighted_async_rate_limiter.Outcome
+module Outcome = Weighted_limiter_async.Outcome
 
 module type S = sig
   module Persistent : Persistent_connection_kernel.S
 
   (** Pool type. *)
-  type t = Persistent.t Weighted_async_rate_limiter.t
+  type t = Persistent.t Weighted_limiter_async.t
 
   val of_uris
     :  continue_on_error:bool
@@ -23,9 +23,9 @@ end
 module Make (C : Http_backend_intf.Client.S_persistent) :
   S with module Persistent = C.Persistent = struct
   include C
-  module Outcome = Weighted_async_rate_limiter.Outcome
+  module Outcome = Weighted_limiter_async.Outcome
 
-  type t = Persistent.t Weighted_async_rate_limiter.t
+  type t = Persistent.t Weighted_limiter_async.t
 
   let of_uris
       ~continue_on_error
@@ -62,7 +62,7 @@ module Make (C : Http_backend_intf.Client.S_persistent) :
       in
       Resource_throttle.create_exn ~resources ~continue_on_error ()
     in
-    Weighted_async_rate_limiter.
+    Weighted_limiter_async.
       { pool
       ; token_bucket =
           Token_bucket.create_exn

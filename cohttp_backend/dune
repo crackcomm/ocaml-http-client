@@ -7,6 +7,6 @@
   async-uri
   uri
   cohttp-async
-  http_client.weighted_async_rate_limiter
+  http_client.weighted_limiter_async
   http_client.http_backend_intf)
  (preprocess (pps ppx_jane)))

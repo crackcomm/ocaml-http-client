@@ -6,7 +6,7 @@
   async_kernel
   uri
   http_client.http_types
-  http_client.weighted_async_rate_limiter)
+  http_client.weighted_limiter_async)
  (preprocess
   (pps
    ppx_sexp_conv

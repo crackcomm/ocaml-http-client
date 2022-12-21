@@ -14,11 +14,11 @@ type call =
 
 type t = { call : call }
 
-let outcome_result_exn (resp : Response.Result.t Weighted_async_rate_limiter.Outcome.t)
+let outcome_result_exn (resp : Response.Result.t Weighted_limiter_async.Outcome.t)
     : Response.Result.t
   =
   match resp with
-  | Weighted_async_rate_limiter.Outcome.Response response -> response
+  | Weighted_limiter_async.Outcome.Response response -> response
   | Queue_timeout -> Error `Queue_timeout
   | Aborted -> failwith "connection pool was killed"
   | Raised e -> Error (`Raised e)
@@ -70,9 +70,9 @@ let create_persistent
   let enqueue ~req_id ~method_name ?timeout ?(weight = 1) (request : Request.t) =
     let call = call_client ~req_id ~method_name request in
     match timeout with
-    | None -> Weighted_async_rate_limiter.enqueue' ~weight pool call
+    | None -> Weighted_limiter_async.enqueue' ~weight pool call
     | Some timeout ->
-      Weighted_async_rate_limiter.enqueue_timeout' ~weight ~timeout pool call
+      Weighted_limiter_async.enqueue_timeout' ~weight ~timeout pool call
   in
   let next_req_id = Request_id.create () in
   let call ?(method_name = "call") ?timeout ?weight req =
@@ -106,7 +106,7 @@ let create
       ()
   in
   let pool =
-    Weighted_async_rate_limiter.
+    Weighted_limiter_async.
       { pool
       ; token_bucket =
           Limiter_async.Token_bucket.create_exn
@@ -145,9 +145,9 @@ let create
   let enqueue ~req_id ~method_name ?timeout ?(weight = 1) (request : Request.t) =
     let call = call_client ~req_id ~method_name request in
     match timeout with
-    | None -> Weighted_async_rate_limiter.enqueue' ~weight pool call
+    | None -> Weighted_limiter_async.enqueue' ~weight pool call
     | Some timeout ->
-      Weighted_async_rate_limiter.enqueue_timeout' ~weight ~timeout pool call
+      Weighted_limiter_async.enqueue_timeout' ~weight ~timeout pool call
   in
   let next_req_id = Request_id.create () in
   let call ?(method_name = "call") ?timeout ?weight req =

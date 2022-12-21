@@ -1,6 +1,6 @@
 (library
- (name weighted_async_rate_limiter)
- (public_name http_client.weighted_async_rate_limiter)
+ (name weighted_limiter_async)
+ (public_name http_client.weighted_limiter_async)
  (libraries
   core
   core_kernel.limiter
