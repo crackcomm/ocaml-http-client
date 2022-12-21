@@ -4,12 +4,12 @@ open Core
 open Async
 include Signed_route_intf
 
-module Make (E : Descriptor) :
+module Make (C : Signer) (E : Route_intf.Descriptor) :
   S
     with type Request.t := E.Request.t
      and type Response.t := E.Response.t
-     and type Signer.t := E.Signer.t = struct
-  module Signer = E.Signer
+     and type Signer.t := C.t = struct
+  module Signer = C
   module R = Route.Make (E)
   include R
 
@@ -24,7 +24,7 @@ module Make (E : Descriptor) :
       (http_request signer req)
   ;;
 
-  let call ?timeout client signer req =
+  let dispatch ?timeout client signer req =
     fetch_response ?timeout client signer req
     >>= function
     | Ok resp -> Response.parse_response resp.status resp.body >>| Result.return

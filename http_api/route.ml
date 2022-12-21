@@ -20,7 +20,7 @@ module Make (E : Descriptor) = struct
 
   let ( let*? ) x f = Deferred.Result.bind ~f x
 
-  let call ?timeout client req =
+  let dispatch ?timeout client req =
     let*? resp = fetch_response ?timeout client req in
     Response.parse_response resp.status resp.body >>| Result.return
   ;;

@@ -17,14 +17,16 @@ module type S = sig
   (** [http_request req] constructs http request for {!Request.t}. *)
   val http_request : Request.t -> Http_types.Request.t
 
-  (** [call ?timeout client req] constructs http request and calls using {!Http_client.t}. *)
-  val call
+  (** [dispatch ?timeout client req] constructs http request and dispatches using
+      {!Http_client.t}. *)
+  val dispatch
     :  ?timeout:Time_ns.Span.t
     -> Http_client.t
     -> Request.t
     -> (Response.t, Http_types.Response.Error.t) Deferred.Result.t
 
-  (** [dispatch_exn ?timeout client req] constructs http request and calls using {!Http_client.t}. *)
+  (** [dispatch_exn ?timeout client req] constructs http request and dispatches using
+      {!Http_client.t}. *)
   val dispatch_exn
     :  ?timeout:Time_ns.Span.t
     -> Http_client.t
