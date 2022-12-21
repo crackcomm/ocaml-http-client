@@ -1,6 +1,6 @@
 # ocaml-http-client
 
-HTTP API functors in OCaml with [http/af](https://github.com/inhabitedtype/httpaf) backend.
+HTTP API functors in OCaml with [http/af](https://github.com/inhabitedtype/httpaf) and [cohttp](https://github.com/mirage/ocaml-cohttp) backend.
 
 To know more about rate limiter see [Limiter_async](https://ocaml.org/p/async_kernel/v0.15.0/doc/Limiter_async/index.html) and [`enqueue_timeout'`](https://github.com/crackcomm/ocaml-http-client/blob/main/http_client/pool.ml#L99) implementation.
 
