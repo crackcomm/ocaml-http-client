@@ -25,7 +25,7 @@ module Make (E : Descriptor) = struct
     Response.parse_response resp.status resp.body >>| Result.return
   ;;
 
-  let call_exn ?timeout client req =
+  let dispatch_exn ?timeout client req =
     fetch_response ?timeout client req
     >>| Http_types.Response.Result.ok_exn ~here:[%here]
     >>= fun resp -> Response.parse_response resp.status resp.body

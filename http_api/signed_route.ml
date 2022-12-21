@@ -31,7 +31,7 @@ module Make (E : Descriptor) :
     | Error err -> return (Error err)
   ;;
 
-  let call_exn ?timeout client signer req =
+  let dispatch_exn ?timeout client signer req =
     fetch_response ?timeout client signer req
     >>| Http_types.Response.Result.ok_exn ~here:[%here]
     >>= fun resp -> Response.parse_response resp.status resp.body

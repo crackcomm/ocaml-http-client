@@ -9,7 +9,6 @@
   httpaf
   httpaf-async
   http_client.http_backend_intf)
- (inline_tests)
  (preprocess
   (pps
    ppx_jane

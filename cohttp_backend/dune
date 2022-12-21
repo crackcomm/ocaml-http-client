@@ -9,5 +9,4 @@
   cohttp-async
   http_client.weighted_async_rate_limiter
   http_client.http_backend_intf)
- (inline_tests)
  (preprocess (pps ppx_jane)))

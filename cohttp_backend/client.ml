@@ -22,10 +22,6 @@ module Conn = struct
   let connect uri = connect uri
 end
 
-let%test_unit "Conn : Http_backend_intf.Client.S_conn" =
-  ignore (module Conn : Http_backend_intf.Client.S_conn)
-;;
-
 module Persistent = Persistent_connection_kernel.Make (Conn)
 
 let call ?timeout (conn : Conn.t) (req : Http_types.Request.t)

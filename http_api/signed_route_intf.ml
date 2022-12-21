@@ -34,9 +34,9 @@ module type S = sig
     -> Request.t
     -> (Response.t, Http_types.Response.Error.t) Deferred.Result.t
 
-  (** [call_exn ?timeout client signer req] constructs a signed http request and calls
+  (** [dispatch_exn ?timeout client signer req] constructs a signed http request and calls
       using {!Http_client.t}. *)
-  val call_exn
+  val dispatch_exn
     :  ?timeout:Time_ns.Span.t
     -> Http_client.t
     -> Signer.t
