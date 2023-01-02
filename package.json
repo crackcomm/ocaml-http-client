@@ -1,9 +1,8 @@
 {
   "dependencies": {
-    "ocaml": "4.14.0",
+    "ocaml": "4.14.1",
     "@opam/dune": "3.6.1",
     "@opam/core": "v0.15.1",
-    "@opam/logs": "0.7.0",
     "@opam/async": "v0.15.0",
     "@opam/httpaf": "*",
     "@opam/httpaf-async": "*",
@@ -12,12 +11,11 @@
     "@opam/async-uri": "*",
     "@opam/ppx_log": "*",
     "@opam/ppx_deriving": "*",
-    "@opam/ppx_sexp_conv": "*",
     "@opam/expect_test_helpers_async": "*",
     "@opam/ppx_jane": "*"
   },
   "resolutions": {
-    "ocaml": "esy-ocaml/ocaml#393bd25",
+    "ocaml": "crackcomm/ocaml#69879c6",
     "@opam/async-uri": "crackcomm/async-uri:async-uri.opam#f55df54",
     "@opam/easy-format": {
       "source": "ocaml-community/easy-format:easy-format.opam#56c57e6",
@@ -43,13 +41,15 @@
           "@opam/result": "*"
         }
       }
-    }
+    },
+    "@opam/ocamlformat": "ocaml-ppx/ocamlformat:ocamlformat.opam#da5337c",
+    "@opam/ocaml-lsp-server": "ocaml/ocaml-lsp:ocaml-lsp-server.opam#ac6569c",
+    "@opam/odoc": "ocaml/odoc:odoc.opam#b6223d8"
   },
   "devDependencies": {
-    "@opam/odoc": ">= 2.1.0",
-    "@opam/ocamlformat": "0.21.0",
-    "@opam/ocamlformat-rpc": "0.21.0",
-    "@opam/ocaml-lsp-server": "1.11.1",
+    "@opam/odoc": "*",
+    "@opam/ocamlformat": "*",
+    "@opam/ocaml-lsp-server": "*",
     "@opam/atdgen": "*",
     "@opam/atdgen-runtime": "*"
   }
