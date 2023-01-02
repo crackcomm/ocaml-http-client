@@ -29,11 +29,15 @@
   (async
    (>= 0.15.0))
   (core
-   (>= 0.15.0))
+   (>= 0.15.1))
   (uri
    (>= 4.2.0))
   (async-uri
    (> 0.3.0))
+  (cohttp
+   (>= 5.0.0))
+  (cohttp-async
+   (>= 5.0.0))
   (ppx_log
    (>= 0.15.0))
   (ppx_sexp_conv
