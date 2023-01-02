@@ -10,7 +10,6 @@
 .cache/
 
 **/*.log
-**/*.lock
 
 package-lock.json
 
