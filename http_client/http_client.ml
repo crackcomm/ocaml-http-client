@@ -71,8 +71,7 @@ let create_persistent
     let call = call_client ~req_id ~method_name request in
     match timeout with
     | None -> Weighted_limiter_async.enqueue' ~weight pool call
-    | Some timeout ->
-      Weighted_limiter_async.enqueue_timeout' ~weight ~timeout pool call
+    | Some timeout -> Weighted_limiter_async.enqueue_timeout' ~weight ~timeout pool call
   in
   let next_req_id = Request_id.create () in
   let call ?(method_name = "call") ?timeout ?weight req =
@@ -146,8 +145,7 @@ let create
     let call = call_client ~req_id ~method_name request in
     match timeout with
     | None -> Weighted_limiter_async.enqueue' ~weight pool call
-    | Some timeout ->
-      Weighted_limiter_async.enqueue_timeout' ~weight ~timeout pool call
+    | Some timeout -> Weighted_limiter_async.enqueue_timeout' ~weight ~timeout pool call
   in
   let next_req_id = Request_id.create () in
   let call ?(method_name = "call") ?timeout ?weight req =
