@@ -8,12 +8,13 @@ type t =
   ; meth : Method.t
   ; headers : Headers.t
   ; chunked : bool
-  ; body : Body.t
+  ; body : Body.t [@sexp.opaque]
   ; body_length : int64 option
   }
 [@@deriving sexp_of]
 
 let path { uri; _ } = Uri.path uri
+let path_and_query { uri; _ } = Uri.path_and_query uri
 
 let make ?(headers = []) ?(body = `Empty) ?body_length meth uri =
   let chunked = Body.is_pipe body in

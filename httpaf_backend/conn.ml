@@ -274,7 +274,10 @@ let convert_request ~body_length (req : Request.t) =
     | None -> req.headers
   in
   let headers = Httpaf.Headers.of_list headers in
-  Httpaf.Request.create ~headers (req.meth :> Httpaf.Method.t) (Request.path req)
+  Httpaf.Request.create
+    ~headers
+    (req.meth :> Httpaf.Method.t)
+    (Request.path_and_query req)
 ;;
 
 let call ?timeout Async_uri.{ r; w; _ } (req : Request.t) : Response.Result.t Deferred.t =
@@ -286,7 +289,6 @@ let call ?timeout Async_uri.{ r; w; _ } (req : Request.t) : Response.Result.t De
     "Httpaf sending"
       (req.uri : Uri_sexp.t)
       (req.meth : Method.t)
-      (req.body : Body.t)
       (req.headers : Headers.t)];
   request ?timeout ?body (convert_request ~body_length req) r w
 ;;
