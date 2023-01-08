@@ -46,6 +46,11 @@ let span = function
   | Finished (_, created, finished) -> Some Time_ns.Span.(finished - created)
 ;;
 
+let span_exn = function
+  | Started _ -> failwith "called [span_exn] on unfinished [Req_id]"
+  | Finished (_, created, finished) -> Time_ns.Span.(finished - created)
+;;
+
 let%test_unit "create generates sequential IDs" =
   let now = now () in
   let create = create () in

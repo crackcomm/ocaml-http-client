@@ -1,5 +1,8 @@
 (* SPDX-License-Identifier: BSD-3-Clause *)
 
+(* This backend is not recommended.
+   It does not handle streams properly and some exceptions are not caught. *)
+
 open Core
 open Async
 open Http_types
@@ -19,11 +22,11 @@ let method_std : Method.t -> Httpaf.Method.standard = function
 
 (** Creates Httpaf.Body.Reader.t for a response depending on known body length. *)
 let create_bigstring_list_reader
-    ~request_method
-    ~fill_bigstring
-    ~fill_bigstring_list
-    r
-    body
+  ~request_method
+  ~fill_bigstring
+  ~fill_bigstring_list
+  r
+  body
   =
   match Httpaf.Response.body_length ~request_method r with
   | `Fixed size ->
@@ -82,47 +85,47 @@ let create_ignore_reader fill_body body =
     [Bigstring.t]. If the response is [`Chunked], the body can be piped or returned as a
     list or concatenated into a single [Bigstring.t]. *)
 let create_response_handler
-    ~(how : Body.How.t)
-    ~request_method
-    (response_var : (Httpaf.Response.t * Body.t, 'a) Result.t Ivar.t)
-    response
+  ~(how : Body.How.t)
+  ~request_method
+  (response_var : (Httpaf.Response.t * Body.t, 'a) Result.t Ivar.t)
+  response
   =
   let request_method = method_std request_method in
   let how =
     match how, Httpaf.Response.body_length ~request_method response with
+    | `Ignore, _ -> `Ignore
+    | `Strings, `Fixed _ -> `String
+    | `Pipe, `Chunked -> `String_pipe
+    | `Strings, `Chunked -> `Strings
+    | `String, `Chunked -> `String
     | _, `Close_delimited -> failwith "body_length Close_delimited unimplemented"
-    | `Ignore, `Fixed _ -> `Ignore
-    | _, `Fixed _ -> `Bigstring_concat
-    | `Ignore, `Error _ -> `Ignore
-    | _, `Error _ -> `Bigstring_concat
-    | `Bigstrings, `Chunked -> `Bigstring_list
-    | `Pipe_string, `Chunked -> `String_pipe
-    | (`Pipe_bigstring | _), `Chunked -> `Bigstring_pipe
+    | _, (`Fixed _ | `Error _) -> `String
   in
   let fill_response_body body = Ivar.fill response_var (Ok (response, body)) in
   let response_handler =
     match how with
     | `Ignore -> create_ignore_reader (fun () -> fill_response_body `Empty)
-    | `Bigstring_list ->
+    | `Strings ->
       create_bigstring_list_reader
         ~request_method
-        ~fill_bigstring:(fun buf -> fill_response_body (Body.of_bigstring buf))
-        ~fill_bigstring_list:(fun buf -> fill_response_body (Body.of_bigstring_list buf))
+        ~fill_bigstring:(fun buf ->
+          fill_response_body (Bigstring.to_string buf |> Body.of_string))
+        ~fill_bigstring_list:(fun bufs ->
+          fill_response_body
+            (Body.of_string_list @@ List.map bufs ~f:(fun buf -> Bigstring.to_string buf)))
         response
-    | `Bigstring_concat ->
+    | `String ->
       create_bigstring_list_reader
         ~request_method
-        ~fill_bigstring:(fun buf -> fill_response_body (Body.of_bigstring buf))
-        ~fill_bigstring_list:(fun buf ->
-          fill_response_body (Body.of_bigstring (Bigstring.concat buf)))
+        ~fill_bigstring:(fun buf ->
+          fill_response_body (Bigstring.to_string buf |> Body.of_string))
+        ~fill_bigstring_list:(fun bufs ->
+          fill_response_body
+            (Bigstring.concat bufs |> Bigstring.to_string |> Body.of_string))
         response
-    | `Bigstring_pipe ->
-      let r, w = Pipe.create () in
-      Ivar.fill response_var (Ok (response, `Pipe_bigstring r));
-      create_bigstring_pipe_reader ~to_body:Fn.id w
     | `String_pipe ->
       let r, w = Pipe.create () in
-      Ivar.fill response_var (Ok (response, `Pipe_string r));
+      Ivar.fill response_var (Ok (response, `Pipe r));
       create_bigstring_pipe_reader ~to_body:Bigstring.to_string w
   in
   response_handler
@@ -142,17 +145,17 @@ let reader_loop ~read_complete conn reader =
       Reader.read_one_chunk_at_a_time
         reader
         ~handle_chunk:(fun buf ~pos:src_pos ~len:src_len ->
-          let (n : int) =
-            Httpaf_async.Buffer.put buffer ~f:(fun dst ~off:dst_pos ~len ->
-                let len = if len < src_len then len else src_len in
-                Bigstring.blit ~src:buf ~src_pos ~dst ~dst_pos ~len;
-                len)
-          in
-          let (_ : int) =
-            Httpaf_async.Buffer.get buffer ~f:(fun src ~off ~len ->
-                Httpaf.Client_connection.read conn src ~off ~len)
-          in
-          return @@ `Stop_consumed ((), n))
+        let (n : int) =
+          Httpaf_async.Buffer.put buffer ~f:(fun dst ~off:dst_pos ~len ->
+            let len = if len < src_len then len else src_len in
+            Bigstring.blit ~src:buf ~src_pos ~dst ~dst_pos ~len;
+            len)
+        in
+        let (_ : int) =
+          Httpaf_async.Buffer.get buffer ~f:(fun src ~off ~len ->
+            Httpaf.Client_connection.read conn src ~off ~len)
+        in
+        return @@ `Stop_consumed ((), n))
       >>= (function
       | `Eof ->
         (* Read remainder of data from connection buffer. *)
@@ -176,11 +179,11 @@ let writer_loop ~write_complete conn w =
     | `Write iovecs ->
       let write_iovecs writer iovecs =
         List.fold_left
-          iovecs
           ~init:0
           ~f:(fun written ({ Httpaf.IOVec.len; _ } as iovec) ->
             Writer.schedule_iovec writer (Obj.magic iovec);
             written + len)
+          iovecs
       in
       let result = `Ok (write_iovecs w iovecs) in
       Httpaf.Client_connection.report_write_result conn result;
@@ -192,14 +195,8 @@ let writer_loop ~write_complete conn w =
 ;;
 
 (* If user specified a [`Pipe] in [read] we can stream the results into the [pipe]. *)
-let request
-    ?timeout
-    ?body
-    ?(read : Body.How.t = `Pipe_bigstring)
-    (req : Httpaf.Request.t)
-    r
-    w
-  =
+let request ?timeout ?body ?(read : Body.How.t = `Pipe) (req : Httpaf.Request.t) r w =
+  let monitor = Monitor.create () in
   let response_var = Ivar.create () in
   let error_handler e =
     let err =
@@ -214,15 +211,16 @@ let request
         [%log.global.debug "Malformed_response" (e : string)];
         `Connection_failure
     in
-    [%log.global.debug "closing reader and writer" (err : Response.Error.t)];
-    don't_wait_for (Writer.close w);
-    don't_wait_for (Reader.close r);
+    [%log.global.debug "closing reader and writer" (err : Http_types.Error.t)];
+    don't_wait_for
+      (Scheduler.within' (fun () -> Writer.close w >>= fun () -> Reader.close r));
     Ivar.fill_if_empty response_var @@ Error err
   in
   let request_method = Httpaf.Request.(req.meth) in
   let response_handler = create_response_handler ~how:read ~request_method response_var in
   let bw, conn = Httpaf.Client_connection.request req ~error_handler ~response_handler in
-  let monitor = Monitor.create () in
+  (* Detach monitor and report errors to the error handler. *)
+  Monitor.detach_and_iter_errors monitor ~f:(Httpaf.Client_connection.report_exn conn);
   let read_complete, write_complete = Ivar.create (), Ivar.create () in
   (* Start reading loop in the background. *)
   don't_wait_for
@@ -234,8 +232,7 @@ let request
     | None -> ()
     | Some body -> Httpaf.Body.Writer.write_string bw body
   in
-  Httpaf.Body.Writer.close bw;
-  Monitor.detach_and_iter_errors monitor ~f:(Httpaf.Client_connection.report_exn conn);
+  Scheduler.within ~monitor (fun () -> Httpaf.Body.Writer.close bw);
   let timeout =
     match timeout with
     | None -> Deferred.never ()
@@ -280,7 +277,9 @@ let convert_request ~body_length (req : Request.t) =
     (Request.path_and_query req)
 ;;
 
-let call ?timeout Async_uri.{ r; w; _ } (req : Request.t) : Response.Result.t Deferred.t =
+let call ?timeout Async_uri.{ r; w; _ } (req : Request.t)
+  : (Response.t, Http_types.Error.t) Deferred.Result.t
+  =
   (* TODO: Handle different types of request body. *)
   let body_length = Body.length_opt req.body in
   Body.to_string_opt' req.body
@@ -290,5 +289,9 @@ let call ?timeout Async_uri.{ r; w; _ } (req : Request.t) : Response.Result.t De
       (req.uri : Uri_sexp.t)
       (req.meth : Method.t)
       (req.headers : Headers.t)];
-  request ?timeout ?body (convert_request ~body_length req) r w
+  try_with ~extract_exn:true (fun () ->
+    request ?timeout ?body (convert_request ~body_length req) r w)
+  >>| function
+  | Ok res -> res
+  | Error exn -> Error (`Raised exn)
 ;;

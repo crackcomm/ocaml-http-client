@@ -17,6 +17,14 @@ module type S = sig
     type t
   end
 
+  module Error : sig
+    type t =
+      [ `Message of Response.Error.t
+      | Http_types.Error.t
+      ]
+    [@@deriving sexp_of]
+  end
+
   (** [http_request req] constructs a signed http request for {!Request.t}. *)
   val http_request : Signer.t -> Request.t -> Http_types.Request.t
 
@@ -27,12 +35,13 @@ module type S = sig
     -> Http_client.t
     -> Signer.t
     -> Request.t
-    -> (Response.t, Http_types.Response.Error.t) Deferred.Result.t
+    -> (Response.t, Error.t) Result.t Deferred.t
 
   (** [dispatch_exn ?timeout client signer req] constructs a signed http request and
       dispatches using {!Http_client.t}. *)
   val dispatch_exn
-    :  ?timeout:Time_ns.Span.t
+    :  ?here:Lexing.position
+    -> ?timeout:Time_ns.Span.t
     -> Http_client.t
     -> Signer.t
     -> Request.t
@@ -46,6 +55,7 @@ module type Signed_route = sig
   module Make (C : Signer) (E : Route_intf.Descriptor) :
     S
       with type Request.t := E.Request.t
-       and type Response.t := E.Response.t
+       and type Response.t = E.Response.t
+       and type Response.Error.t = E.Response.Error.t
        and type Signer.t := C.t
 end

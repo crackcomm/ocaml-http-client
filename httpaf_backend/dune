@@ -1,6 +1,7 @@
 (library
  (name httpaf_backend)
  (public_name http_client.httpaf_backend)
+ (inline_tests)
  (libraries
   core
   async

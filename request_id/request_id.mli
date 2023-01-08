@@ -17,3 +17,6 @@ val id : t -> int
 (** Returns the duration of the given request as a [Time_ns.Span.t], or [None] if the
     request is not finished. *)
 val span : t -> Time_ns.Span.t option
+
+(** Returns the duration of a finished request ID. *)
+val span_exn : t -> Time_ns.Span.t

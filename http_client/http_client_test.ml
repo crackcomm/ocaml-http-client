@@ -26,7 +26,7 @@ let%expect_test "create: uses host from conn if set" =
 ;;
 
 let%expect_test "mock body" =
-  let body = `Pipe_string (Pipe.of_list [ "hello"; "world" ]) in
+  let body = `Pipe (Pipe.of_list [ "hello"; "world" ]) in
   let uri = Uri.make ~path:"/test" ~host:"ocxmr.io" ~query:[ "a", [ "b"; "c" ] ] () in
   print_request (Request.make ~body `GET uri);
   [%expect

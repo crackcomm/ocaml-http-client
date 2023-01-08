@@ -19,7 +19,7 @@ module type S = sig
     :  ?timeout:Core.Time_ns.Span.t
     -> Conn.t
     -> Request.t
-    -> Response.Result.t Deferred.t
+    -> (Response.t, Http_types.Error.t) Deferred.Result.t
 end
 
 module type S_persistent = sig

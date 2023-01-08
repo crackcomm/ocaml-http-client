@@ -53,13 +53,7 @@ end) : Http_backend_intf.Client.S = struct
      | `Empty -> Deferred.unit
      | `String s -> print_endline s |> return
      | `Strings s -> List.iter s ~f:print_string |> finish_
-     | `Bigstring s -> print_endline (Bigstring.to_string s) |> return
-     | `Bigstrings s ->
-       List.iter s ~f:(fun s -> print_string (Bigstring.to_string s)) |> finish_
-     | `Pipe_string s -> Pipe.iter_without_pushback s ~f:print_string >>= finish_
-     | `Pipe_bigstring s ->
-       Pipe.iter_without_pushback s ~f:(fun s -> print_string (Bigstring.to_string s))
-       >>= finish_)
+     | `Pipe s -> Pipe.iter_without_pushback s ~f:print_string >>= finish_)
     >>| fun _ -> Ok response
   ;;
 end
