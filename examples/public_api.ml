@@ -4,14 +4,14 @@ open Core
 open Async
 open Http_api
 
-module Error_message = Response.Make (struct
+module Error_message = struct
   type t = Http_api_message.t [@@deriving sexp_of]
 
-  let of_string s =
+  let of_string ~status:_ s =
     let res = Api_j.response_message_of_string s in
     { Http_api_message.code = res.code; message = res.message }
   ;;
-end)
+end
 
 module Exchange_info = Route.Make (struct
   let method_name = "bnc_perp.Public_api.Exchange_info"
@@ -24,14 +24,12 @@ module Exchange_info = Route.Make (struct
     let query _ = None
   end)
 
-  module Response = Response.Make_on_success (struct
-    include Response.Make (struct
-      type t = Api_t.exchange_info [@@deriving sexp_of]
+  module Response = Response.Of_string.Make_on_success (struct
+    type t = Api_t.exchange_info [@@deriving sexp_of]
 
-      let of_string = Api_j.exchange_info_of_string
-    end)
+    let of_string = Api_j.exchange_info_of_string
 
-    module Response_error = Error_message
+    module Error = Error_message
   end)
 end)
 
@@ -42,7 +40,6 @@ let%expect_test "Public Binance Perp API" =
       (Uri.make ~scheme:"https" ~host:"fapi.binance.com" ())
   in
   Exchange_info.dispatch_exn pool ()
-  >>| Http_api_message.Result.value_exn ~here:[%here]
   >>| fun info ->
   List.length info.symbols > 150 |> Bool.to_string |> print_endline;
   [%expect {| true |}];

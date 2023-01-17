@@ -3,4 +3,5 @@
 module Exchange_info :
   Http_api.Route.S
     with type Request.t := unit
-     and type Response.t := Api_t.exchange_info Http_api_message.Result.t
+     and type Response.t := Api_t.exchange_info
+     and type Response.Error.t := Http_api_message.t
