@@ -49,7 +49,7 @@ module type Route = sig
 
   module Make (E : Descriptor) :
     S
-      with type Request.t := E.Request.t
+      with type Request.t = E.Request.t
        and type Response.t = E.Response.t
        and type Response.Error.t = E.Response.Error.t
 end

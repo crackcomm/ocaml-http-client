@@ -6,7 +6,7 @@ include Signed_route_intf
 
 module Make (C : Signer) (E : Route_intf.Descriptor) :
   S
-    with type Request.t := E.Request.t
+    with type Request.t = E.Request.t
      and type Response.t = E.Response.t
      and type Response.Error.t = E.Response.Error.t
      and type Signer.t := C.t = struct

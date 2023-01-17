@@ -64,6 +64,8 @@ let create_persistent
         (method_name : string)
         (req_id : Request_id.t)
         (host : string)
+        (request.meth : Method.t)
+        (request.uri : Uri_sexp.t)
         (request.headers : Headers.t)];
     Client.call ?timeout conn request
   in
@@ -80,12 +82,12 @@ let create_persistent
     >>| outcome_result_exn
     >>| fun response ->
     let req_id = Request_id.finish_ req_id in
-    let span = Request_id.span_exn req_id in
     [%log.global.debug
       "Finished request (persistent)"
         (method_name : string)
         (req_id : Request_id.t)
-        (span : Time_ns.Span.t)];
+        (req.uri : Uri_sexp.t)
+        (Request_id.span_exn req_id : Time_ns.Span.t)];
     response
   in
   { call }
@@ -100,7 +102,6 @@ let create
   uri
   =
   let uri = set_default_https uri in
-  let uri = Uri.with_scheme uri (Some "https") in
   let client () =
     [%log.global.debug "Http_client connecting." (uri : Uri_sexp.t)];
     Client.Conn.connect uri

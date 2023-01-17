@@ -15,7 +15,7 @@ module Conn = struct
     Clock.run_at_intervals
       ~stop:(Ivar.read closed)
       Time.Span.(of_ms 250.)
-      (fun () -> if is_closed conn then Ivar.fill closed () else ());
+      (fun () -> if is_closed conn then Ivar.fill closed ());
     Ivar.read closed
   ;;
 
