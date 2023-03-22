@@ -5,7 +5,7 @@ include Identifiable
 
 (** Creates a function for generating new request IDs and starting new requests. The
     generated requests will have sequential IDs starting from 0. *)
-val create : unit -> (?now:Time_ns.Span.t -> unit -> t)
+val create : unit -> ?now:Time_ns.Span.t -> unit -> t
 
 (** Finishes the given request and returns the finished request. This function expects a
     [Started] request, and will raise if called on a [Finished] request. *)

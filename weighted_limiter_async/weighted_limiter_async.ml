@@ -36,10 +36,10 @@ let enqueue' ~weight t f =
 ;;
 
 let enqueue_timeout'
-    ~weight
-    ~timeout
-    t
-    (f : ?timeout:Time_ns.Span.t -> 'a -> 'b Deferred.t)
+  ~weight
+  ~timeout
+  t
+  (f : ?timeout:Time_ns.Span.t -> 'a -> 'b Deferred.t)
   =
   let start = Time_ns.now () in
   let l = Token_bucket.to_limiter t.token_bucket |> Expert.to_jane_limiter in

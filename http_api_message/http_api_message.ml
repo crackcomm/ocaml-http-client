@@ -20,3 +20,5 @@ module Result = struct
     | Error e -> failwiths ~here "Http_api_message.Result.value_exn" e T.sexp_of_t
   ;;
 end
+
+let of_string ~status message = { code = status; message }
