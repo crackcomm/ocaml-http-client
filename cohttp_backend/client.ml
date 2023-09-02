@@ -9,16 +9,7 @@ let log_name = "cohttp"
 module Conn = struct
   include Client.Connection
 
-  (* HACK: no [close_finished] for cohttp connection. *)
-  let close_finished (conn : t) =
-    let closed = Ivar.create () in
-    Clock.run_at_intervals
-      ~stop:(Ivar.read closed)
-      Time.Span.(of_ms 250.)
-      (fun () -> if is_closed conn then Ivar.fill closed ());
-    Ivar.read closed
-  ;;
-
+  let close_finished (conn : t) = Throttle.cleaned (Obj.magic conn)
   let connect uri = connect uri
 end
 

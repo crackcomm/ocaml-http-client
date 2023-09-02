@@ -188,3 +188,9 @@ let create_test (module Client : Http_backend_intf.Client.S) =
 let call ?method_name ?timeout ?weight client request =
   client.call ?method_name ?timeout ?weight request
 ;;
+
+let call_exn ?method_name ?timeout ?weight client request =
+  match%map call ?method_name ?timeout ?weight client request with
+  | Ok v -> v
+  | Error err -> failwiths ~here:[%here] "Symbols fetch" err Http_types.Error.sexp_of_t
+;;
